@@ -1,14 +1,10 @@
 :root {
     --primary-font: 'Montserrat', sans-serif;
-    --script-font: 'Dancing Script', cursive; /* Font untuk "Coming Soon" */
+    --script-font: 'Dancing Script', cursive;
     --text-color: #ffffff;
     --text-color-secondary: #cccccc;
-    --accent-color: #f0f0f0; /* Warna aksen bisa disesuaikan */
-    --button-bg: rgba(255, 255, 255, 0.15);
-    --button-hover-bg: rgba(255, 255, 255, 0.25);
-    /* Background: Ganti dengan gambar Anda jika mau */
-    --bg-image: url('bg.jpg'); /* Ganti dengan path gambar Anda */
-    /* --bg-gradient: linear-gradient(135deg, #1a2a20, #0f1f18); */ /* Gradien hijau gelap dinonaktifkan */
+    --accent-color: #f0f0f0;
+    --bg-image: url('bg.jpg');
 }
 
 * {
@@ -21,23 +17,73 @@
 body {
     font-family: var(--primary-font);
     color: var(--text-color);
-    /* Jika menggunakan gambar: */
     background: var(--bg-image) no-repeat center center/cover;
-    /* background: var(--bg-gradient); */ /* Gradien dinonaktifkan */
     min-height: 100vh;
     position: relative;
-    overflow-x: hidden; /* Mencegah scroll horizontal */
+    overflow-x: hidden;
 }
 
+#intro-blur-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2); /* Sedikit menggelapkan untuk efek blur yang lebih baik */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 2; /* Diubah dari 998. Di atas .page-wrapper (z-index: 1) */
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.7s ease-out, visibility 0.7s ease-out;
+}
 
+#intro-blur-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none; /* Agar tidak menghalangi interaksi setelah hilang */
+}
+
+#music-play-btn {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3; /* Diubah dari 999. Di atas #intro-blur-overlay (z-index: 2) */
+    background-color: var(--accent-color);
+    color: #222;
+    border: none;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    font-size: 30px; /* Ukuran ikon play */
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: all 0.5s ease-in-out; /* Transisi untuk semua perubahan */
+}
+
+#music-play-btn.control-active {
+    width: 45px;
+    height: 45px;
+    font-size: 18px; /* Ukuran ikon play/pause yang lebih kecil */
+    top: 50%; /* Atur ke tengah viewport secara vertikal */
+    left: calc(100% - 45px - 25px); /* Posisi horizontal: 25px dari tepi kanan */
+    transform: translateY(-50%); /* Pusatkan tombol secara vertikal relatif terhadap posisinya */
+    background-color: rgba(240, 240, 240, 0.8); /* Sedikit transparan */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    /* z-index tidak perlu diubah di sini karena sudah diatur di #music-play-btn */
+}
 
 .page-wrapper {
     position: relative;
-    z-index: 1;
+    z-index: 1; /* Konten utama berada di lapisan ini */
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    padding: 20px 40px; /* Padding umum */
+    padding: 20px 40px;
 }
 
 header {
@@ -98,19 +144,16 @@ footer {
     align-items: center;
     width: 100%;
     padding: 15px 0;
-    margin-top: auto; /* Mendorong footer ke bawah */
+    margin-top: auto;
 }
-
 .social-icons a {
     color: var(--text-color-secondary);
-    margin-right: 20px;
+    margin-right: 10px;
+    margin-left: 10px;
     font-size: 1.2rem;
     transition: color 0.3s ease;
 }
 
-social-icons a:hover {
-    color: var(--text-color);
-}
 
 .subscribe-form {
     display: flex;
@@ -119,6 +162,8 @@ social-icons a:hover {
     border-radius: 25px;
     padding: 5px;
     border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 
 .subscribe-form input[type="email"] {
@@ -128,7 +173,7 @@ social-icons a:hover {
     padding: 8px 15px;
     outline: none;
     font-size: 0.9rem;
-    min-width: 200px; /* Lebar minimal input */
+    min-width: 200px;
 }
 
 .subscribe-form input[type="email"]::placeholder {
@@ -139,7 +184,7 @@ social-icons a:hover {
 .subscribe-form button[type="submit"] {
     background: var(--accent-color);
     border: none;
-    color: #222; /* Warna ikon panah */
+    color: #222;
     border-radius: 50%;
     width: 30px;
     height: 30px;
@@ -153,8 +198,6 @@ social-icons a:hover {
 .subscribe-form button[type="submit"]:hover {
     background-color: #ddd;
 }
-
-/* --- Media Queries untuk Responsif --- */
 
 @media (max-width: 992px) {
     .main-title {
@@ -188,7 +231,7 @@ social-icons a:hover {
         text-align: center;
     }
     .social-icons {
-        margin-bottom: 10px; /* Jarak tambahan jika diperlukan */
+        margin-bottom: 0px;
     }
     .subscribe-form input[type="email"] {
         min-width: 180px;
@@ -208,21 +251,21 @@ social-icons a:hover {
         font-size: 1rem;
     }
     .main-title {
-        font-size: 3rem; /* Lebih kecil lagi untuk layar sangat kecil */
+        font-size: 3rem;
     }
     .subscribe-form {
-        width: 100%; /* Form email mengambil lebar penuh */
-        max-width: 300px; /* Batasi lebar maksimal form */
+        width: 100%;
+        max-width: 300px;
         margin-left: auto;
         margin-right: auto;
     }
     .subscribe-form input[type="email"] {
-        flex-grow: 1; /* Input mengambil sisa ruang */
+        flex-grow: 1;
         min-width: auto;
     }
 }
 
 .main-title {
     font-family: var(--script-font);
-    font-size: 6rem; /* Ukuran bisa disesuaikan */
+    font-size: 6rem;
 }
