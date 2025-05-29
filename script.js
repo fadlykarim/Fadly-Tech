@@ -1,7 +1,7 @@
 // --- Konfigurasi Countdown ---
 // Atur tanggal peluncuran Anda di sini
 // Format: "Bulan Hari, Tahun Jam:Menit:Detik" (misalnya, "December 31, 2024 23:59:59")
-const launchDateString = "July 31, 2025 17:00:00"; // Contoh: 31 Juli 2025, pukul 17:00
+const launchDateString = "Juny 15, 2025 06:00:00"; // Contoh: 31 Juli 2025, pukul 17:00
 const countDownDate = new Date(launchDateString).getTime();
 
 // Update countdown setiap 1 detik
