@@ -1,0 +1,294 @@
+:root {
+    --primary-font: 'Montserrat', sans-serif;
+    --script-font: 'Dancing Script', cursive; /* Font untuk "Coming Soon" */
+    --text-color: #ffffff;
+    --text-color-secondary: #cccccc;
+    --accent-color: #f0f0f0; /* Warna aksen bisa disesuaikan */
+    --button-bg: rgba(255, 255, 255, 0.15);
+    --button-hover-bg: rgba(255, 255, 255, 0.25);
+    /* Background: Ganti dengan gambar Anda jika mau */
+    /* --bg-image: url('path/to/your/elegant-leaf-image.jpg'); */
+    --bg-gradient: linear-gradient(135deg, #1a2a20, #0f1f18); /* Gradien hijau gelap */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--primary-font);
+    color: var(--text-color);
+    /* Jika menggunakan gambar: */
+    /* background: var(--bg-image) no-repeat center center/cover; */
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden; /* Mencegah scroll horizontal */
+}
+
+/* Overlay jika menggunakan gambar background agar teks lebih jelas */
+/* body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 0;
+} */
+
+.page-wrapper {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 40px; /* Padding umum */
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 15px 0;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+header nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+#countdown {
+    display: flex;
+    gap: 15px;
+    font-size: 0.9rem;
+    color: var(--text-color-secondary);
+}
+
+#countdown .countdown-item span {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+#countdown .countdown-item small {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    margin-left: 3px;
+    color: var(--text-color-secondary);
+}
+
+.signup-btn {
+    background-color: var(--button-bg);
+    color: var(--text-color);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.signup-btn:hover {
+    background-color: var(--button-hover-bg);
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.main-title {
+    font-family: var(--script-font);
+    font-size: 6rem; /* Ukuran bisa disesuaikan */
+    font-weight: 700;
+    color: var(--text-color);
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
+}
+
+.play-button {
+    width: 70px;
+    height: 70px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.play-button i {
+    font-size: 1.5rem;
+    color: var(--text-color);
+    margin-left: 5px; /* Sedikit offset agar pas di tengah */
+}
+
+.play-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 15px 0;
+    margin-top: auto; /* Mendorong footer ke bawah */
+}
+
+.social-icons a {
+    color: var(--text-color-secondary);
+    margin-right: 20px;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+.social-icons a:last-child {
+    margin-right: 0;
+}
+
+.social-icons a:hover {
+    color: var(--text-color);
+}
+
+.subscribe-form {
+    display: flex;
+    align-items: center;
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 25px;
+    padding: 5px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.subscribe-form input[type="email"] {
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    padding: 8px 15px;
+    outline: none;
+    font-size: 0.9rem;
+    min-width: 200px; /* Lebar minimal input */
+}
+
+.subscribe-form input[type="email"]::placeholder {
+    color: var(--text-color-secondary);
+    opacity: 0.8;
+}
+
+.subscribe-form button[type="submit"] {
+    background: var(--accent-color);
+    border: none;
+    color: #222; /* Warna ikon panah */
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.subscribe-form button[type="submit"]:hover {
+    background-color: #ddd;
+}
+
+/* --- Media Queries untuk Responsif --- */
+
+@media (max-width: 992px) {
+    .main-title {
+        font-size: 5rem;
+    }
+    .page-wrapper {
+        padding: 20px 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+    header nav {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+    .logo {
+        margin-bottom: 10px;
+    }
+    .main-title {
+        font-size: 4rem;
+    }
+    .play-button {
+        width: 60px;
+        height: 60px;
+    }
+    .play-button i {
+        font-size: 1.3rem;
+    }
+    footer {
+        flex-direction: column;
+        gap: 25px;
+        text-align: center;
+    }
+    .social-icons {
+        margin-bottom: 10px; /* Jarak tambahan jika diperlukan */
+    }
+    .subscribe-form input[type="email"] {
+        min-width: 180px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-wrapper {
+        padding: 15px 20px;
+    }
+    #countdown {
+        gap: 10px;
+        font-size: 0.8rem;
+    }
+    #countdown .countdown-item span {
+        font-size: 1rem;
+    }
+    .signup-btn {
+        padding: 8px 16px;
+        font-size: 0.75rem;
+    }
+    .main-title {
+        font-size: 3rem; /* Lebih kecil lagi untuk layar sangat kecil */
+    }
+    .subscribe-form {
+        width: 100%; /* Form email mengambil lebar penuh */
+        max-width: 300px; /* Batasi lebar maksimal form */
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .subscribe-form input[type="email"] {
+        flex-grow: 1; /* Input mengambil sisa ruang */
+        min-width: auto;
+    }
+}
