@@ -50,6 +50,7 @@ if (subscribeForm) {
             alert('Silakan masukkan alamat email Anda.');
         }
         // Di aplikasi nyata, Anda akan mengirim email ini ke server atau layanan email marketing
+        // Kode di bawah ini hanya mencatat email ke konsol browser, tidak mengirimkannya.
         console.log("Email to subscribe:", email);
     });
 }
