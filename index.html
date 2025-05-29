@@ -3,49 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Segera Hadir | Dalam Perbaikan</title>
+    <title>Graden. - Segera Hadir</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <div class="overlay"></div>
-    <div class="container">
+    <div class="page-wrapper">
         <header>
-            <h1 class="main-title">Segera Hadir</h1>
-            </header>
-        <main>
-            <p class="subtitle">Situs web kami sedang dalam tahap akhir pengembangan (atau perbaikan). Kami bekerja keras untuk memberikan Anda pengalaman terbaik. Nantikan peluncuran kami!</p>
-            
-            <div id="countdown">
-                <div class="countdown-item">
-                    <span id="days" class="time-value">00</span>
-                    <span class="time-label">Hari</span>
+            <div class="logo">Graden.</div>
+            <nav>
+                <div id="countdown">
+                    <span class="countdown-item"><span id="days">00</span> <small>Days</small></span>
+                    <span class="countdown-item"><span id="hours">00</span> <small>Hr</small></span>
+                    <span class="countdown-item"><span id="minutes">00</span> <small>Min</small></span>
+                    <span class="countdown-item"><span id="seconds">00</span> <small>Sec</small></span>
                 </div>
-                <div class="countdown-item">
-                    <span id="hours" class="time-value">00</span>
-                    <span class="time-label">Jam</span>
-                </div>
-                <div class="countdown-item">
-                    <span id="minutes" class="time-value">00</span>
-                    <span class="time-label">Menit</span>
-                </div>
-                <div class="countdown-item">
-                    <span id="seconds" class="time-value">00</span>
-                    <span class="time-label">Detik</span>
-                </div>
-            </div>
+                <button class="signup-btn" onclick="alert('Formulir Sign Up akan muncul di sini!')">SIGN UP</button>
+            </nav>
+        </header>
 
-            <div class="progress-bar-container">
-                <div class="progress-bar" id="progressBar"></div>
-                <span id="progressText">0% Selesai</span>
+        <main>
+            <h1 class="main-title">Coming Soon</h1>
+            <div class="play-button" onclick="alert('Video akan diputar di sini!')">
+                <i class="fas fa-play"></i>
             </div>
-            
-            <p class="contact-info">Hubungi kami di: <a href="mailto:info@example.com">info@websiteanda.com</a></p>
         </main>
+
         <footer>
-            <p>&copy; <span id="currentYear"></span> Nama Perusahaan Anda. Hak Cipta Dilindungi.</p>
+            <div class="social-icons">
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            </div>
+            <form class="subscribe-form" id="subscribeForm">
+                <input type="email" id="emailInput" placeholder="Email Address" required>
+                <button type="submit" aria-label="Subscribe"><i class="fas fa-arrow-right"></i></button>
+            </form>
         </footer>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
