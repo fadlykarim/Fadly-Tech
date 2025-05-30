@@ -65,6 +65,11 @@ body {
     transition: all 0.5s ease-in-out; /* Transisi untuk semua perubahan */
 }
 
+#music-play-btn:hover {
+    background-color: #e0e0e0; /* Darker version of var(--accent-color) */
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
 #music-play-btn.control-active {
     width: 45px;
     height: 45px;
@@ -75,6 +80,11 @@ body {
     background-color: rgba(240, 240, 240, 0.8); /* Sedikit transparan */
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     /* z-index tidak perlu diubah di sini karena sudah diatur di #music-play-btn */
+}
+
+#music-play-btn.control-active:hover {
+    background-color: #d0d0d0; /* Match chatbot button hover */
+    transform: translateY(-50%) scale(1.1); /* Maintain vertical centering and scale */
 }
 
 .page-wrapper {
@@ -263,9 +273,289 @@ footer {
         flex-grow: 1;
         min-width: auto;
     }
+    #chat-window {
+        width: calc(100% - 20px); /* Full width with some margin */
+        right: 10px;
+        /* Adjust bottom based on new mobile chatbot toggle position */
+        bottom: calc(15px + 45px + 10px); /* mobile_toggle_bottom_margin + NEW_mobile_toggle_height (45px) + gap */
+        max-height: 60vh;
+    }
+    #chatbot-toggle-btn {
+        width: 45px; /* Mobile specific size - MATCH active music button */
+        height: 45px; /* Mobile specific size - MATCH active music button */
+        font-size: 18px; /* Mobile specific icon size - MATCH active music button */
+        
+        /* Position below and aligned with the active music button on mobile */
+        left: calc(100% - 45px - 25px); /* Align left edge with active music button's left edge */
+                                        /* Active music button is 45px wide, 25px from right */
+        top: calc(50% + (45px / 2) + 10px); /* Position below active music button */
+                                            /* Music btn: 50% (center Y) + 22.5px (half height) + 10px (gap) */
+        transform: none; /* Ensure no Y-transform interferes with top positioning */
+
+        /* Ensure it's also initially hidden on mobile */
+        /* opacity: 0; pointer-events: none; are already set in the base style */
+    }
 }
 
 .main-title {
     font-family: var(--script-font);
     font-size: 6rem;
+}
+
+/* Chatbot Styles */
+#chatbot-toggle-btn {
+    position: fixed;
+    /* Match active music button style and position below it */
+    width: 45px; /* Match active music button */
+    height: 45px; /* Match active music button */
+    font-size: 18px; /* Match active music button icon size */
+    background-color: rgba(240, 240, 240, 0.8); /* Match active music button */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* Match active music button */
+    color: #222;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 990; /* Above page content, below chat window if open */
+    
+    /* Positioning below the active music button */
+    /* Active music button: top: 50%; left: calc(100% - 45px - 25px); transform: translateY(-50%); */
+    /* Chatbot button center will be 45px (height of music btn) / 2 + 15px (gap) + 45px (height of chatbot btn) / 2 below music btn center */
+    /* Or, top of chatbot button = (top of music button center - half music button height) + music button height + gap */
+    left: calc(100% - 45px - 25px); /* Same horizontal alignment as active music button */
+    top: calc(50% + 22.5px + 15px); /* (Music button center Y) + half music_btn_height + gap_Y */
+    transform: translateY(0%); /* Align top edge to the calculated 'top' */
+
+    /* Initial state: hidden */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease-in-out, background-color 0.3s ease, transform 0.3s ease;
+}
+
+#chatbot-toggle-btn:hover {
+    background-color: #d0d0d0; /* Darken accent color on hover */
+    transform: scale(1.1) translateY(0%); /* Keep translateY if used in base */
+}
+
+#chat-window {
+    position: fixed;
+    bottom: calc(15px + 45px + 15px); /* bottom_margin + chatbot_toggle_height + gap_above_toggle */
+    right: 25px;
+    width: 350px;
+    max-height: 70vh;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 991;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+    opacity: 0;
+    transform: translateY(20px);
+    visibility: hidden;
+}
+
+#chat-window:not(.hidden) {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+}
+
+#chat-window.hidden {
+    opacity: 0;
+    transform: translateY(20px);
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.chat-header {
+    background-color: var(--accent-color);
+    color: #333;
+    padding: 10px 15px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.chat-header span {
+    font-family: var(--primary-font);
+}
+
+#chat-close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #555;
+    cursor: pointer;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-message {
+    padding: 8px 12px;
+    border-radius: 15px;
+    max-width: 80%;
+    word-wrap: break-word;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.chat-message.user {
+    background-color: var(--accent-color);
+    color: #333;
+    align-self: flex-end;
+    border-bottom-right-radius: 5px;
+}
+
+.chat-message.bot {
+    background-color: #e0e0e0;
+    color: #333;
+    align-self: flex-start;
+    border-bottom-left-radius: 5px;
+}
+
+/* Typing indicator styles */
+.typing-indicator {
+    background-color: #e0e0e0;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+}
+
+.typing-indicator span {
+    height: 8px;
+    width: 8px;
+    margin: 0 2px;
+    background-color: #888;
+    border-radius: 50%;
+    display: inline-block;
+    animation: typing 1.4s infinite ease-in-out both;
+}
+
+.typing-indicator span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.5);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.chat-input-area {
+    display: flex;
+    padding: 12px;
+    border-top: 1px solid #e0e0e0;
+    background-color: #fff;
+    align-items: center;
+}
+
+#chatInput {
+    flex-grow: 1;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 10px 18px;
+    font-size: 0.95rem;
+    outline: none;
+    margin-right: 10px;
+    font-family: var(--primary-font);
+    color: #333;
+    background-color: #f5f5f5;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#chatInput:focus {
+    border-color: #aaa;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+#chatInput::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+#chatSendBtn {
+    background-color: var(--accent-color);
+    color: #222;
+    border: none;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    min-width: 38px; /* Memastikan tombol tidak menyusut */
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+#chatSendBtn:hover {
+    background-color: #d0d0d0;
+    transform: scale(1.05);
+}
+
+#chatSendBtn:active {
+    transform: scale(0.95);
+    background-color: #c0c0c0;
+}
+
+#chatSendBtn i {
+    margin-left: 1px; /* Sedikit penyesuaian untuk ikon */
+}
+
+/* Responsive adjustments for chat window if needed */
+@media (max-width: 480px) {
+    #chat-window {
+        width: calc(100% - 20px); /* Full width with some margin */
+        right: 10px;
+        /* Adjust bottom based on new mobile chatbot toggle position */
+        bottom: calc(15px + 45px + 10px); /* mobile_toggle_bottom_margin + NEW_mobile_toggle_height (45px) + gap */
+        max-height: 60vh;
+    }
+    #chatbot-toggle-btn {
+        width: 45px; /* Mobile specific size - MATCH active music button */
+        height: 45px; /* Mobile specific size - MATCH active music button */
+        font-size: 18px; /* Mobile specific icon size - MATCH active music button */
+        
+        /* Position below and aligned with the active music button on mobile */
+        left: calc(100% - 45px - 25px); /* Align left edge with active music button's left edge */
+                                        /* Active music button is 45px wide, 25px from right */
+        top: calc(50% + (45px / 2) + 10px); /* Position below active music button */
+                                            /* Music btn: 50% (center Y) + 22.5px (half height) + 10px (gap) */
+        transform: none; /* Ensure no Y-transform interferes with top positioning */
+
+        /* Ensure it's also initially hidden on mobile */
+        /* opacity: 0; pointer-events: none; are already set in the base style */
+    }
 }
