@@ -1,90 +1,104 @@
-// --- Konfigurasi Countdown ---
-const launchDateString = "June 15, 2025 06:00:00"; // "June" bukan "Jude"
-const countDownDate = new Date(launchDateString).getTime();
+// File: script.js (MODIFIKASI)
 
-const countdownFunction = setInterval(function() {
-    const now = new Date().getTime();
-    const distance = countDownDate - now;
+// --- Konfigurasi Awal & Fungsi Helper ---
+const launchDateString = "June 15, 2025 06:00:00"; // Pastikan format ini benar untuk new Date()
+let countdownFunctionInterval; // Variabel untuk interval countdown
 
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-    // Pastikan elemen-elemen ini ada di HTML Anda
+// --- Fungsi Countdown ---
+function startCountdown() {
+    const countDownDate = new Date(launchDateString).getTime();
     const daysEl = document.getElementById("days");
     const hoursEl = document.getElementById("hours");
     const minutesEl = document.getElementById("minutes");
     const secondsEl = document.getElementById("seconds");
 
-    if (daysEl) daysEl.innerText = String(days).padStart(2, '0');
-    if (hoursEl) hoursEl.innerText = String(hours).padStart(2, '0');
-    if (minutesEl) minutesEl.innerText = String(minutes).padStart(2, '0');
-    if (secondsEl) secondsEl.innerText = String(seconds).padStart(2, '0');
+    function update() {
+        const now = new Date().getTime();
+        const distance = countDownDate - now;
 
-    if (distance < 0) {
-        clearInterval(countdownFunction);
-        const countdownEl = document.getElementById("countdown");
-        if (countdownEl) {
-            countdownEl.innerHTML = "<span style='font-size:1.2rem; color: var(--text-color);'>We Are Live!</span>";
-        }
-        const mainTitle = document.querySelector('.main-title');
-        if (mainTitle) {
-            mainTitle.innerText = "Welcome!";
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        if (daysEl) daysEl.innerText = String(days).padStart(2, '0');
+        if (hoursEl) hoursEl.innerText = String(hours).padStart(2, '0');
+        if (minutesEl) minutesEl.innerText = String(minutes).padStart(2, '0');
+        if (secondsEl) secondsEl.innerText = String(seconds).padStart(2, '0');
+
+        if (distance < 0) {
+            clearInterval(countdownFunctionInterval);
+            const countdownEl = document.getElementById("countdown");
+            if (countdownEl) {
+                countdownEl.innerHTML = "<span style='font-size:1.2rem; color: var(--text-color);'>We Are Live!</span>";
+            }
+            const mainTitle = document.querySelector('.main-title');
+            if (mainTitle) {
+                mainTitle.innerText = "Welcome!";
+            }
         }
     }
-}, 1000);
-
-// --- Konfigurasi Subscribe Form ---
-const subscribeForm = document.getElementById('subscribeForm');
-if (subscribeForm) {
-    subscribeForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const emailInput = document.getElementById('emailInput');
-        if (emailInput) {
-            const email = emailInput.value;
-            if (email) {
-                alert(`Terima kasih! Email Anda "${email}" telah didaftarkan untuk notifikasi.`);
-                emailInput.value = '';
-            } else {
-                alert('Silakan masukkan alamat email Anda.');
-            }
-            console.log("Email to subscribe:", email);
-        } else {
-            console.error("Email input field not found.");
-        }
-    });
+    update(); // Panggil sekali untuk tampilan awal
+    countdownFunctionInterval = setInterval(update, 1000);
 }
+
 
 // --- Kode Utama Setelah DOM Dimuat ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Mulai Countdown
+    startCountdown();
+
+    // --- Konfigurasi Subscribe Form ---
+    const subscribeForm = document.getElementById('subscribeForm');
+    if (subscribeForm) {
+        subscribeForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const emailInput = document.getElementById('emailInput');
+            if (emailInput) {
+                const email = emailInput.value;
+                if (email) {
+                    alert(`Terima kasih! Email Anda "${email}" telah didaftarkan untuk notifikasi.`);
+                    emailInput.value = '';
+                    // Untuk fungsionalitas nyata, Anda bisa gunakan Netlify Forms
+                    // dengan menambahkan data-netlify="true" ke tag <form> di HTML
+                    // atau kirim ke backend lain.
+                } else {
+                    alert('Silakan masukkan alamat email Anda.');
+                }
+                // console.log("Email to subscribe:", email); // Untuk debugging jika perlu
+            } else {
+                console.error("Email input field not found.");
+            }
+        });
+    }
+
     // --- Elemen dan Logika Music Player & Intro Overlay ---
     const introOverlay = document.getElementById('intro-blur-overlay');
     const musicPlayBtn = document.getElementById('music-play-btn');
     const bgMusic = document.getElementById('background-music');
-    const pageWrapper = document.querySelector('.page-wrapper');
-    const chatbotToggleBtn = document.getElementById('chatbot-toggle-btn'); // Tombol untuk menampilkan chatbot
+    const chatbotToggleBtn = document.getElementById('chatbot-toggle-btn');
 
-    if (introOverlay && musicPlayBtn && bgMusic && pageWrapper && chatbotToggleBtn) {
+    if (introOverlay && musicPlayBtn && bgMusic && chatbotToggleBtn) {
         musicPlayBtn.addEventListener('click', () => {
-            if (!musicPlayBtn.classList.contains('control-active')) {
+            if (!musicPlayBtn.classList.contains('control-active')) { // Tombol awal untuk memulai
                 introOverlay.classList.add('hidden');
                 if (chatbotToggleBtn) {
                     chatbotToggleBtn.style.opacity = '1';
                     chatbotToggleBtn.style.pointerEvents = 'auto';
                 }
                 bgMusic.play().catch(error => {
-                    console.warn("Autoplay was prevented:", error);
+                    console.warn("Autoplay was prevented. User interaction needed:", error);
+                    // Mungkin beri tahu pengguna untuk klik lagi jika musik tidak mulai
                 });
                 musicPlayBtn.classList.add('control-active');
                 musicPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            } else {
+            } else { // Tombol sudah menjadi kontrol musik
                 if (bgMusic.paused) {
                     bgMusic.play();
-                    musicPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    // musicPlayBtn.innerHTML = '<i class="fas fa-pause"></i>'; // Diurus oleh event 'onplay'
                 } else {
                     bgMusic.pause();
-                    musicPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    // musicPlayBtn.innerHTML = '<i class="fas fa-play"></i>'; // Diurus oleh event 'onpause'
                 }
             }
         });
@@ -102,12 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         }
     } else {
-        console.error('Required elements for music player/intro not found:');
-        if (!introOverlay) console.error('introOverlay not found');
-        if (!musicPlayBtn) console.error('musicPlayBtn not found');
-        if (!bgMusic) console.error('bgMusic not found');
-        if (!pageWrapper) console.error('pageWrapper not found');
-        if (!chatbotToggleBtn) console.error('chatbotToggleBtn (for intro) not found');
+        console.error('Required elements for music player/intro not found.');
     }
 
     // --- Elemen dan Logika Chatbot ---
@@ -117,12 +126,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatInput = document.getElementById('chatInput');
     const chatSendBtn = document.getElementById('chatSendBtn');
 
-    // Pastikan semua elemen chatbot ada sebelum menambahkan event listener
     if (chatbotToggleBtn && chatWindow && chatCloseBtn && chatMessages && chatInput && chatSendBtn) {
         chatbotToggleBtn.addEventListener('click', () => {
             chatWindow.classList.toggle('hidden');
             if (!chatWindow.classList.contains('hidden')) {
-                if (chatMessages.children.length === 0) {
+                if (chatMessages.children.length === 0) { // Hanya tambahkan pesan selamat datang jika belum ada pesan
                     addBotMessage("Halo! Saya adalah Karmel Bot. Ada yang bisa saya bantu?");
                 }
                 chatInput.focus();
@@ -140,13 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     } else {
-        console.error('Chatbot UI elements not found:');
-        if (!chatbotToggleBtn) console.error('chatbotToggleBtn (for chatbot UI) not found');
-        if (!chatWindow) console.error('chatWindow not found');
-        if (!chatCloseBtn) console.error('chatCloseBtn not found');
-        if (!chatMessages) console.error('chatMessages not found');
-        if (!chatInput) console.error('chatInput not found');
-        if (!chatSendBtn) console.error('chatSendBtn not found');
+        console.error('Satu atau lebih elemen UI chatbot tidak ditemukan.');
     }
 
     // --- Fungsi Helper Chatbot ---
@@ -159,13 +161,28 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollToBottom();
     }
 
-    function addBotMessage(message) {
+    function addBotMessage(message, isTyping = false) {
         if (!chatMessages) return;
+
+        // Hapus indikator pengetikan sebelumnya jika ini bukan pesan pengetikan baru
+        if (!isTyping) {
+            const existingTypingIndicator = chatMessages.querySelector('.typing-indicator');
+            if (existingTypingIndicator) {
+                existingTypingIndicator.remove();
+            }
+        }
+
         const messageElement = document.createElement('div');
         messageElement.classList.add('chat-message', 'bot');
-        messageElement.textContent = message;
+        if (isTyping) {
+            messageElement.classList.add('typing-indicator');
+            messageElement.innerHTML = '<span></span><span></span><span></span>';
+        } else {
+            messageElement.textContent = message;
+        }
         chatMessages.appendChild(messageElement);
         scrollToBottom();
+        return messageElement; // Kembalikan elemen untuk referensi (misal, menghapus indikator)
     }
 
     function scrollToBottom() {
@@ -174,109 +191,88 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function handleUserMessage() {
+    async function handleUserMessage() {
         if (!chatInput) return;
         const messageText = chatInput.value.trim();
         if (messageText === '') return;
 
         addUserMessage(messageText);
         chatInput.value = '';
+        const typingIndicatorElement = addBotMessage('', true); // Tampilkan indikator mengetik
 
-        setTimeout(() => {
-            generateBotResponse(messageText);
-        }, 500);
-    }
+        try {
+            // --- FUNGSI INTI PEMANGGILAN API CHATBOT (via Netlify Function) ---
+            // Nama model yang ingin Anda gunakan.
+            const MODEL_NAME = "gemini-1.5-flash-latest"; // Atau "gemini-2.0-flash-001" atau model valid lainnya
 
-    // --- Fungsi Inti Pemanggilan API Chatbot (Gemini) ---
-    function generateBotResponse(userMessage) {
-        const typingIndicator = document.createElement('div');
-        typingIndicator.classList.add('chat-message', 'bot', 'typing-indicator');
-        typingIndicator.innerHTML = '<span></span><span></span><span></span>';
-        
-        if (chatMessages) {
-            chatMessages.appendChild(typingIndicator);
-            scrollToBottom();
-        } else {
-            console.error("chatMessages element not found, cannot show typing indicator.");
-        }
+            // Susun 'contents' seperti yang Anda lakukan sebelumnya, termasuk konteks/history
+            const contentsForGemini = [
+                {
+                    "role": "user",
+                    "parts": [{ "text": "Konteks: Kamu adalah asisten chatbot untuk website Karmel. Namamu adalah Karmel Bot. Bersikaplah ramah dan membantu. Berikan jawaban singkat dan padat. Tanggal peluncuran website adalah " + launchDateString + ". Selalu jawab dalam bahasa Indonesia." }]
+                },
+                {
+                    "role": "model",
+                    "parts": [{ "text": "Tentu, saya Karmel Bot. Siap membantu Anda!"}]
+                },
+                {
+                    "role": "user",
+                    "parts": [{ "text": messageText }]
+                }
+            ];
+            
+            const generationConfig = {
+                temperature: 0.7,
+                maxOutputTokens: 256, // Sesuaikan jika perlu
+            };
 
-        // --- Konfigurasi untuk Gemini API ---
-        const API_KEY = "AIzaSyBglA8Nehmx-dKjEj5g-HgxXjhRGWsRKbY"; // SANGAT PENTING: GANTI DENGAN API KEY BARU ANDA!
-        
-        // Verifikasi nama model ini di Google AI Studio atau dokumentasi resmi.
-        // "gemini-2.0-flash-001" atau "gemini-1.5-flash-latest" adalah contoh yang baik.
-        const MODEL_NAME = "gemini-2.0-flash-001"; // GANTI jika Anda menggunakan model lain yang valid.
-        
-        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`;
+            const response = await fetch('/.netlify/functions/gemini-proxy', { // PANGGIL NETLIFY FUNCTION
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    modelName: MODEL_NAME,
+                    contents: contentsForGemini,
+                    generationConfig: generationConfig
+                })
+            });
 
-        const contents = [
-            {
-                "role": "user",
-                "parts": [{ "text": "Konteks: Kamu adalah asisten chatbot untuk website Karmel. Namamu adalah Karmel Bot. Bersikaplah ramah dan membantu. Berikan jawaban singkat dan padat. Tanggal peluncuran website adalah " + launchDateString + ". Selalu jawab dalam bahasa Indonesia." }]
-            },
-            {
-                "role": "model",
-                "parts": [{ "text": "Tentu, saya Karmel Bot. Siap membantu Anda!"}] // Contoh respons model, bisa disesuaikan/dihapus
-            },
-            {
-                "role": "user",
-                "parts": [{ "text": userMessage }]
+            if (typingIndicatorElement && chatMessages.contains(typingIndicatorElement)) {
+                typingIndicatorElement.remove();
             }
-        ];
-        
-        const generationConfig = {
-            temperature: 0.7,
-            maxOutputTokens: 256,
-        };
 
-        fetch(API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                contents: contents,
-                generationConfig: generationConfig
-            })
-        })
-        .then(response => {
             if (!response.ok) {
-                return response.json().then(errData => {
-                    console.error("API Error Data:", errData);
-                    let errorMessage = `API error: ${response.status}`;
-                    if (errData.error && errData.error.message) {
-                        errorMessage += ` - ${errData.error.message}`;
+                const errData = await response.json().catch(() => ({ error: "Gagal mem-parse respons error dari server."}));
+                console.error("API Proxy Error Data:", errData);
+                let errorMessage = `Error dari server: ${response.status}`;
+                if (errData.error) {
+                    errorMessage = typeof errData.error === 'object' ? JSON.stringify(errData.error) : errData.error;
+                    if (errData.details) {
+                         errorMessage += ` Detail: ${typeof errData.details === 'object' ? JSON.stringify(errData.details) : errData.details}`;
                     }
-                    throw new Error(errorMessage);
-                }).catch(() => {
-                    throw new Error(`API error: ${response.status} - ${response.statusText}. Respons tidak dapat di-parse sebagai JSON.`);
-                });
+                }
+                throw new Error(errorMessage);
             }
-            return response.json();
-        })
-        .then(data => {
-            if (chatMessages && chatMessages.contains(typingIndicator)) {
-                chatMessages.removeChild(typingIndicator);
-            }
+
+            const data = await response.json();
             
             let botResponse = "Maaf, saya tidak mendapatkan respons yang valid saat ini.";
-            if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
-                botResponse = data.candidates[0].content.parts[0].text;
-            } else if (data.promptFeedback && data.promptFeedback.blockReason) {
-                botResponse = `Tidak dapat menghasilkan respons: ${data.promptFeedback.blockReason}. Coba pertanyaan lain.`;
-                console.warn("Response blocked:", data.promptFeedback);
+            if (data.response) { // Proxy kita mengembalikan dalam format { response: "teks jawaban" }
+                botResponse = data.response;
             } else {
-                console.warn("Unexpected API response structure:", data);
+                console.warn("Unexpected API response structure from proxy:", data);
             }
             addBotMessage(botResponse.trim());
-        })
-        .catch(error => {
-            console.error("Error calling Gemini API:", error.message);
-            if (chatMessages && chatMessages.contains(typingIndicator)) {
-                chatMessages.removeChild(typingIndicator);
+
+        } catch (error) {
+            console.error("Error processing chat message:", error.message);
+            if (typingIndicatorElement && chatMessages.contains(typingIndicatorElement)) {
+                typingIndicatorElement.remove();
             }
             
-            let fallbackResponse = `Maaf, terjadi masalah saat menghubungi AI Gemini (${error.message}). Saya akan coba jawab dengan pengetahuan terbatas saya.`;
+            // Logika Fallback jika API gagal (tetap ada dari kode Anda, ini bagus)
+            let fallbackResponse = `Maaf, terjadi masalah: ${error.message}. Saya akan coba jawab dengan pengetahuan terbatas.`;
             addBotMessage(fallbackResponse);
             
             setTimeout(() => {
@@ -284,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     (launchDateString ? launchDateString.substring(0, launchDateString.indexOf(',')) : 'tanggal yang ditentukan') + 
                     ". Silakan tanyakan apa saja!";
                 
-                const lowerUserMessage = userMessage.toLowerCase();
+                const lowerUserMessage = messageText.toLowerCase();
                 if (lowerUserMessage.includes('halo') || lowerUserMessage.includes('hai')) {
                     localBotResponse = "Halo! Ada yang bisa saya bantu tentang Karmel hari ini?";
                 } else if (lowerUserMessage.includes('launch') || lowerUserMessage.includes('kapan') || lowerUserMessage.includes('tanggal')) {
@@ -298,6 +294,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 addBotMessage(localBotResponse);
             }, 1000);
-        });
+        }
     }
 });
