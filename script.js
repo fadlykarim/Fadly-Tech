@@ -1,10 +1,7 @@
 // File: script.js
-
-// --- Konfigurasi Awal & Fungsi Helper ---
 const launchDateString = "June 15, 2025 06:00:00";
 let countdownFunctionInterval;
 
-// --- Fungsi Countdown ---
 function startCountdown() {
     const countDownDate = new Date(launchDateString).getTime();
     const daysEl = document.getElementById("days");
@@ -55,8 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     alert('Silakan masukkan alamat email Anda.');
                 }
-            } else {
-                console.error("Email input field not found.");
             }
         });
     }
@@ -75,13 +70,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     chatbotToggleBtn.style.pointerEvents = 'auto';
                 }
                 bgMusic.play().catch(error => {
-                    console.warn("Autoplay was prevented:", error);
+                    console.warn("Playback warning:", error.message);
                 });
                 musicPlayBtn.classList.add('control-active');
                 musicPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
             } else {
                 if (bgMusic.paused) {
-                    bgMusic.play();
+                    bgMusic.play().catch(error => console.warn("Playback warning:", error.message));
                 } else {
                     bgMusic.pause();
                 }
@@ -95,8 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (musicPlayBtn.classList.contains('control-active')) musicPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
             };
         }
-    } else {
-        console.error('Required elements for music player/intro not found.');
     }
 
     const chatWindow = document.getElementById('chat-window');
@@ -110,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
             chatWindow.classList.toggle('hidden');
             if (!chatWindow.classList.contains('hidden')) {
                 if (chatMessages.children.length === 0) {
-                    addBotMessage("Halo! Saya Karmel Bot (versi tes). Silakan kirim pesan.");
+                    addBotMessage("Halo! Saya adalah Karmel Bot. Ada yang bisa saya bantu?");
                 }
                 chatInput.focus();
             }
@@ -120,8 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
         chatInput.addEventListener('keypress', (event) => {
             if (event.key === 'Enter') handleUserMessage();
         });
-    } else {
-        console.error('Chatbot UI elements not found.');
     }
 
     function addUserMessage(message) {
@@ -166,62 +157,62 @@ document.addEventListener('DOMContentLoaded', () => {
         const typingIndicatorElement = addBotMessage('', true);
 
         try {
-            console.log("Mencoba mengirim ke proxy dengan pesan:", messageText); // LOG SEBELUM FETCH
+            const contentsForGemini = [
+                { "role": "user", "parts": [{ "text": "Konteks: Kamu adalah asisten chatbot untuk website Karmel. Namamu adalah Karmel Bot. Bersikaplah ramah dan membantu. Berikan jawaban singkat dan padat. Tanggal peluncuran website adalah " + launchDateString + ". Selalu jawab dalam bahasa Indonesia." }] },
+                { "role": "model", "parts": [{ "text": "Tentu, saya Karmel Bot. Siap membantu Anda!"}] },
+                { "role": "user", "parts": [{ "text": messageText }] }
+            ];
+            const generationConfig = { temperature: 0.7, maxOutputTokens: 256 };
 
             const response = await fetch('/.netlify/functions/gemini-proxy', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    // Untuk versi debug proxy yang sangat sederhana, kita hanya kirim userMessage
-                    // Jika proxy Anda sudah mengharapkan modelName, contents, dll., sesuaikan lagi nanti.
-                    userMessage: messageText,
-                    // Anda bisa tambahkan modelName jika proxy minimal Anda juga memeriksanya:
-                    // modelName: "gemini-2.0-flash-001", 
+                    contents: contentsForGemini,
+                    generationConfig: generationConfig
                 })
             });
-
-            console.log("Respons status dari proxy:", response.status); // LOG STATUS RESPONS
 
             if (typingIndicatorElement && chatMessages.contains(typingIndicatorElement)) {
                 typingIndicatorElement.remove();
             }
 
-            const responseBodyText = await response.text(); // Selalu ambil teks dulu
-            console.log("Respons body mentah dari proxy:", responseBodyText); // LOG BODY MENTAH
-
+            const responseBodyText = await response.text();
             if (!response.ok) {
                 let errData;
                 try {
                     errData = JSON.parse(responseBodyText);
                 } catch (e) {
-                    // Jika gagal parse, berarti body bukan JSON, mungkin HTML 405
                     errData = { error: `Server error ${response.status}`, details: responseBodyText };
                 }
                 let errorMessage = errData.error || `Error dari server: ${response.status}`;
-                if (errData.details && typeof errData.details === 'string' && errData.details.includes("<html>")) {
-                    errorMessage = `Error ${response.status}: Halaman tidak diizinkan atau tidak ditemukan.`;
-                } else if (errData.details) {
+                if (errData.details) {
                     errorMessage += ` Detail: ${typeof errData.details === 'object' ? JSON.stringify(errData.details) : errData.details}`;
                 }
                 throw new Error(errorMessage);
             }
 
-            const data = JSON.parse(responseBodyText); // Coba parse jika response.ok
-            
-            // Sesuaikan dengan apa yang dikembalikan oleh proxy minimal Anda
-            // Jika proxy minimal mengembalikan { message: "...", receivedBody: ... }
-            let botResponse = data.message || (data.response || "Tidak ada pesan dari bot.");
-            if (data.receivedBody) {
-                console.log("Proxy menerima body:", data.receivedBody);
-            }
+            const data = JSON.parse(responseBodyText);
+            let botResponse = data.response || "Maaf, saya tidak mendapatkan respons yang valid saat ini.";
             addBotMessage(botResponse.trim());
 
         } catch (error) {
-            console.error("Error dalam handleUserMessage:", error.message);
+            console.error("Chat Error:", error.message);
             if (typingIndicatorElement && chatMessages.contains(typingIndicatorElement)) {
                 typingIndicatorElement.remove();
             }
-            addBotMessage(`Error: ${error.message}`);
+            let fallbackResponse = `Maaf, terjadi masalah: ${error.message}. Saya akan coba jawab dengan pengetahuan terbatas.`;
+            addBotMessage(fallbackResponse);
+            setTimeout(() => {
+                let localBotResponse = "Saya dapat menjawab pertanyaan dasar tentang Karmel. Kami akan meluncur pada " + (launchDateString ? launchDateString.substring(0, launchDateString.indexOf(',')) : 'tanggal yang ditentukan') + ". Silakan tanyakan apa saja!";
+                const lowerUserMessage = messageText.toLowerCase();
+                if (lowerUserMessage.includes('halo') || lowerUserMessage.includes('hai')) localBotResponse = "Halo! Ada yang bisa saya bantu tentang Karmel hari ini?";
+                else if (lowerUserMessage.includes('launch') || lowerUserMessage.includes('kapan') || lowerUserMessage.includes('tanggal')) localBotResponse = `Kami akan diluncurkan pada ${launchDateString ? launchDateString.substring(0, launchDateString.indexOf(',')) : 'tanggal yang ditentukan'}. Bersiaplah!`;
+                else if (lowerUserMessage.includes('apa itu karmel') || lowerUserMessage.includes('tentang karmel')) localBotResponse = "Karmel adalah sebuah proyek yang sangat menarik. Nantikan detail lebih lanjut pada hari peluncuran!";
+                else if (lowerUserMessage.includes('terima kasih')) localBotResponse = "Sama-sama! Beri tahu saya jika ada pertanyaan lain.";
+                else if (lowerUserMessage.includes('siapa kamu')) localBotResponse = "Saya adalah Karmel Bot, asisten virtual untuk website Karmel.";
+                addBotMessage(localBotResponse);
+            }, 1000);
         }
     }
 });

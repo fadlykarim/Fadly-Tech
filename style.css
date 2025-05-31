@@ -11,7 +11,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    
 }
 
 body {
@@ -29,10 +28,10 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.2); /* Sedikit menggelapkan untuk efek blur yang lebih baik */
+    background-color: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    z-index: 2; /* Diubah dari 998. Di atas .page-wrapper (z-index: 1) */
+    z-index: 2;
     opacity: 1;
     visibility: visible;
     transition: opacity 0.7s ease-out, visibility 0.7s ease-out;
@@ -41,7 +40,7 @@ body {
 #intro-blur-overlay.hidden {
     opacity: 0;
     visibility: hidden;
-    pointer-events: none; /* Agar tidak menghalangi interaksi setelah hilang */
+    pointer-events: none;
 }
 
 #music-play-btn {
@@ -49,47 +48,46 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 3; /* Diubah dari 999. Di atas #intro-blur-overlay (z-index: 2) */
+    z-index: 3;
     background-color: var(--accent-color);
     color: #222;
     border: none;
     border-radius: 50%;
     width: 80px;
     height: 80px;
-    font-size: 30px; /* Ukuran ikon play */
+    font-size: 30px;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    transition: all 0.5s ease-in-out; /* Transisi untuk semua perubahan */
+    transition: width 0.5s ease-in-out, height 0.5s ease-in-out, font-size 0.5s ease-in-out, top 0.5s ease-in-out, left 0.5s ease-in-out, transform 0.5s ease-in-out, background-color 0.5s ease-in-out;
 }
 
 #music-play-btn:hover {
-    background-color: #e0e0e0; /* Darker version of var(--accent-color) */
+    background-color: #e0e0e0;
     transform: translate(-50%, -50%) scale(1.1);
 }
 
 #music-play-btn.control-active {
     width: 45px;
     height: 45px;
-    font-size: 18px; /* Ukuran ikon play/pause yang lebih kecil */
-    top: 50%; /* Atur ke tengah viewport secara vertikal */
-    left: calc(100% - 45px - 25px); /* Posisi horizontal: 25px dari tepi kanan */
-    transform: translateY(-50%); /* Pusatkan tombol secara vertikal relatif terhadap posisinya */
-    background-color: rgba(240, 240, 240, 0.8); /* Sedikit transparan */
+    font-size: 18px;
+    top: 50%;
+    left: calc(100% - 45px - 25px);
+    transform: translateY(-50%);
+    background-color: rgba(240, 240, 240, 0.8);
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    /* z-index tidak perlu diubah di sini karena sudah diatur di #music-play-btn */
 }
 
 #music-play-btn.control-active:hover {
-    background-color: #d0d0d0; /* Match chatbot button hover */
-    transform: translateY(-50%) scale(1.1); /* Maintain vertical centering and scale */
+    background-color: #d0d0d0;
+    transform: translateY(-50%) scale(1.1);
 }
 
 .page-wrapper {
     position: relative;
-    z-index: 1; /* Konten utama berada di lapisan ini */
+    z-index: 1;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -136,7 +134,6 @@ header nav {
     color: var(--text-color-secondary);
 }
 
-
 main {
     flex-grow: 1;
     display: flex;
@@ -147,6 +144,10 @@ main {
     margin-bottom: 20px;
 }
 
+.main-title {
+    font-family: var(--script-font);
+    font-size: 6rem;
+}
 
 footer {
     display: flex;
@@ -156,14 +157,13 @@ footer {
     padding: 15px 0;
     margin-top: auto;
 }
+
 .social-icons a {
     color: var(--text-color-secondary);
-    margin-right: 10px;
-    margin-left: 10px;
+    margin: 0 10px;
     font-size: 1.2rem;
     transition: color 0.3s ease;
 }
-
 
 .subscribe-form {
     display: flex;
@@ -209,138 +209,36 @@ footer {
     background-color: #ddd;
 }
 
-@media (max-width: 992px) {
-    .main-title {
-        font-size: 5rem;
-    }
-    .page-wrapper {
-        padding: 20px 30px;
-    }
-}
-
-@media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-    }
-    header nav {
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-    }
-    .logo {
-        margin-bottom: 10px;
-    }
-    .main-title {
-        font-size: 4rem;
-    }
-    footer {
-        flex-direction: column;
-        gap: 25px;
-        text-align: center;
-    }
-    .social-icons {
-        margin-bottom: 0px;
-    }
-    .subscribe-form input[type="email"] {
-        min-width: 180px;
-        font-size: 0.85rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .page-wrapper {
-        padding: 15px 20px;
-    }
-    #countdown {
-        gap: 10px;
-        font-size: 0.8rem;
-    }
-    #countdown .countdown-item span {
-        font-size: 1rem;
-    }
-    .main-title {
-        font-size: 3rem;
-    }
-    .subscribe-form {
-        width: 100%;
-        max-width: 300px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    .subscribe-form input[type="email"] {
-        flex-grow: 1;
-        min-width: auto;
-    }
-    #chat-window {
-        width: calc(100% - 20px); /* Full width with some margin */
-        right: 10px;
-        /* Adjust bottom based on new mobile chatbot toggle position */
-        bottom: calc(15px + 45px + 10px); /* mobile_toggle_bottom_margin + NEW_mobile_toggle_height (45px) + gap */
-        max-height: 60vh;
-    }
-    #chatbot-toggle-btn {
-        width: 45px; /* Mobile specific size - MATCH active music button */
-        height: 45px; /* Mobile specific size - MATCH active music button */
-        font-size: 18px; /* Mobile specific icon size - MATCH active music button */
-        
-        /* Position below and aligned with the active music button on mobile */
-        left: calc(100% - 45px - 25px); /* Align left edge with active music button's left edge */
-                                        /* Active music button is 45px wide, 25px from right */
-        top: calc(50% + (45px / 2) + 10px); /* Position below active music button */
-                                            /* Music btn: 50% (center Y) + 22.5px (half height) + 10px (gap) */
-        transform: none; /* Ensure no Y-transform interferes with top positioning */
-
-        /* Ensure it's also initially hidden on mobile */
-        /* opacity: 0; pointer-events: none; are already set in the base style */
-    }
-}
-
-.main-title {
-    font-family: var(--script-font);
-    font-size: 6rem;
-}
-
-/* Chatbot Styles */
 #chatbot-toggle-btn {
     position: fixed;
-    /* Match active music button style and position below it */
-    width: 45px; /* Match active music button */
-    height: 45px; /* Match active music button */
-    font-size: 18px; /* Match active music button icon size */
-    background-color: rgba(240, 240, 240, 0.8); /* Match active music button */
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* Match active music button */
+    width: 45px;
+    height: 45px;
+    font-size: 18px;
+    background-color: rgba(240, 240, 240, 0.8);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     color: #222;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    z-index: 990; /* Above page content, below chat window if open */
-    
-    /* Positioning below the active music button */
-    /* Active music button: top: 50%; left: calc(100% - 45px - 25px); transform: translateY(-50%); */
-    /* Chatbot button center will be 45px (height of music btn) / 2 + 15px (gap) + 45px (height of chatbot btn) / 2 below music btn center */
-    /* Or, top of chatbot button = (top of music button center - half music button height) + music button height + gap */
-    left: calc(100% - 45px - 25px); /* Same horizontal alignment as active music button */
-    top: calc(50% + 22.5px + 15px); /* (Music button center Y) + half music_btn_height + gap_Y */
-    transform: translateY(0%); /* Align top edge to the calculated 'top' */
-
-    /* Initial state: hidden */
+    z-index: 990;
+    left: calc(100% - 45px - 25px);
+    top: calc(50% + 22.5px + 15px);
+    transform: translateY(0%);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.5s ease-in-out, background-color 0.3s ease, transform 0.3s ease;
 }
 
 #chatbot-toggle-btn:hover {
-    background-color: #d0d0d0; /* Darken accent color on hover */
-    transform: scale(1.1) translateY(0%); /* Keep translateY if used in base */
+    background-color: #d0d0d0;
+    transform: scale(1.1) translateY(0%);
 }
 
 #chat-window {
     position: fixed;
-    bottom: calc(15px + 45px + 15px); /* bottom_margin + chatbot_toggle_height + gap_above_toggle */
+    bottom: calc(15px + 45px + 15px);
     right: 25px;
     width: 350px;
     max-height: 70vh;
@@ -426,7 +324,6 @@ footer {
     border-bottom-left-radius: 5px;
 }
 
-/* Typing indicator styles */
 .typing-indicator {
     background-color: #e0e0e0;
     padding: 8px 16px;
@@ -446,28 +343,13 @@ footer {
     animation: typing 1.4s infinite ease-in-out both;
 }
 
-.typing-indicator span:nth-child(1) {
-    animation-delay: 0s;
-}
-
-.typing-indicator span:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.typing-indicator span:nth-child(3) {
-    animation-delay: 0.4s;
-}
+.typing-indicator span:nth-child(1) { animation-delay: 0s; }
+.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
 
 @keyframes typing {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.5);
-    }
-    100% {
-        transform: scale(1);
-    }
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.5); }
 }
 
 .chat-input-area {
@@ -489,7 +371,7 @@ footer {
     font-family: var(--primary-font);
     color: #333;
     background-color: #f5f5f5;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
 }
 
 #chatInput:focus {
@@ -510,13 +392,13 @@ footer {
     border-radius: 50%;
     width: 38px;
     height: 38px;
-    min-width: 38px; /* Memastikan tombol tidak menyusut */
+    min-width: 38px;
     font-size: 16px;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
@@ -531,31 +413,85 @@ footer {
 }
 
 #chatSendBtn i {
-    margin-left: 1px; /* Sedikit penyesuaian untuk ikon */
+    margin-left: 1px;
 }
 
-/* Responsive adjustments for chat window if needed */
+@media (max-width: 992px) {
+    .main-title {
+        font-size: 5rem;
+    }
+    .page-wrapper {
+        padding: 20px 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+    header nav {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+    .logo {
+        margin-bottom: 10px;
+    }
+    .main-title {
+        font-size: 4rem;
+    }
+    footer {
+        flex-direction: column;
+        gap: 25px;
+        text-align: center;
+    }
+    .social-icons {
+        margin-bottom: 0px; /* Tetap 0px, bisa juga dihapus jika tidak ada override dari atas */
+    }
+    .subscribe-form input[type="email"] {
+        min-width: 180px;
+        font-size: 0.85rem;
+    }
+}
+
 @media (max-width: 480px) {
+    .page-wrapper {
+        padding: 15px 20px;
+    }
+    #countdown {
+        gap: 10px;
+        font-size: 0.8rem;
+    }
+    #countdown .countdown-item span {
+        font-size: 1rem;
+    }
+    .main-title {
+        font-size: 3rem;
+    }
+    .subscribe-form {
+        width: 100%;
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .subscribe-form input[type="email"] {
+        flex-grow: 1;
+        min-width: auto;
+    }
     #chat-window {
-        width: calc(100% - 20px); /* Full width with some margin */
+        width: calc(100% - 20px);
         right: 10px;
-        /* Adjust bottom based on new mobile chatbot toggle position */
-        bottom: calc(15px + 45px + 10px); /* mobile_toggle_bottom_margin + NEW_mobile_toggle_height (45px) + gap */
+        bottom: calc(15px + 45px + 10px);
         max-height: 60vh;
     }
     #chatbot-toggle-btn {
-        width: 45px; /* Mobile specific size - MATCH active music button */
-        height: 45px; /* Mobile specific size - MATCH active music button */
-        font-size: 18px; /* Mobile specific icon size - MATCH active music button */
-        
-        /* Position below and aligned with the active music button on mobile */
-        left: calc(100% - 45px - 25px); /* Align left edge with active music button's left edge */
-                                        /* Active music button is 45px wide, 25px from right */
-        top: calc(50% + (45px / 2) + 10px); /* Position below active music button */
-                                            /* Music btn: 50% (center Y) + 22.5px (half height) + 10px (gap) */
-        transform: none; /* Ensure no Y-transform interferes with top positioning */
-
-        /* Ensure it's also initially hidden on mobile */
-        /* opacity: 0; pointer-events: none; are already set in the base style */
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+        left: calc(100% - 45px - 25px);
+        top: calc(50% + (45px / 2) + 10px);
+        transform: none;
     }
 }
