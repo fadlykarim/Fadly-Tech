@@ -1,3 +1,6 @@
+// File: script.js
+
+// --- Konfigurasi Awal & Fungsi Helper ---
 const launchDateString = "June 15, 2025 06:00:00";
 let countdownFunctionInterval;
 
@@ -107,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             chatWindow.classList.toggle('hidden');
             if (!chatWindow.classList.contains('hidden')) {
                 if (chatMessages.children.length === 0) {
-                    addBotMessage("Halo! Saya adalah Karmel Bot. Ada yang bisa saya bantu?");
+                    addBotMessage("Halo! Saya Karmel Bot (versi tes). Silakan kirim pesan.");
                 }
                 chatInput.focus();
             }
@@ -163,69 +166,62 @@ document.addEventListener('DOMContentLoaded', () => {
         const typingIndicatorElement = addBotMessage('', true);
 
         try {
-            // Pastikan MODEL_NAME ini adalah yang valid dan Anda punya akses ke sana.
-            const MODEL_NAME = "gemini-2.0-flash-001"; // Gunakan model yang Anda sebutkan sebelumnya
-
-            const contentsForGemini = [
-                { "role": "user", "parts": [{ "text": "Konteks: Kamu adalah asisten chatbot untuk website Karmel. Namamu adalah Karmel Bot. Bersikaplah ramah dan membantu. Berikan jawaban singkat dan padat. Tanggal peluncuran website adalah " + launchDateString + ". Selalu jawab dalam bahasa Indonesia." }] },
-                { "role": "model", "parts": [{ "text": "Tentu, saya Karmel Bot. Siap membantu Anda!"}] },
-                { "role": "user", "parts": [{ "text": messageText }] }
-            ];
-            const generationConfig = { temperature: 0.7, maxOutputTokens: 256 };
+            console.log("Mencoba mengirim ke proxy dengan pesan:", messageText); // LOG SEBELUM FETCH
 
             const response = await fetch('/.netlify/functions/gemini-proxy', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    modelName: MODEL_NAME,
-                    contents: contentsForGemini,
-                    generationConfig: generationConfig
+                    // Untuk versi debug proxy yang sangat sederhana, kita hanya kirim userMessage
+                    // Jika proxy Anda sudah mengharapkan modelName, contents, dll., sesuaikan lagi nanti.
+                    userMessage: messageText,
+                    // Anda bisa tambahkan modelName jika proxy minimal Anda juga memeriksanya:
+                    // modelName: "gemini-2.0-flash-001", 
                 })
             });
+
+            console.log("Respons status dari proxy:", response.status); // LOG STATUS RESPONS
 
             if (typingIndicatorElement && chatMessages.contains(typingIndicatorElement)) {
                 typingIndicatorElement.remove();
             }
 
+            const responseBodyText = await response.text(); // Selalu ambil teks dulu
+            console.log("Respons body mentah dari proxy:", responseBodyText); // LOG BODY MENTAH
+
             if (!response.ok) {
-                // Coba dapatkan teks error dulu, baru coba parse sebagai JSON
-                const errorText = await response.text();
-                console.error("Raw error response from proxy (status " + response.status + "):", errorText);
                 let errData;
                 try {
-                    errData = JSON.parse(errorText);
+                    errData = JSON.parse(responseBodyText);
                 } catch (e) {
-                    errData = { error: "Gagal mem-parse respons error dari server.", details: errorText };
+                    // Jika gagal parse, berarti body bukan JSON, mungkin HTML 405
+                    errData = { error: `Server error ${response.status}`, details: responseBodyText };
                 }
-                
                 let errorMessage = errData.error || `Error dari server: ${response.status}`;
-                if (errData.details) {
+                if (errData.details && typeof errData.details === 'string' && errData.details.includes("<html>")) {
+                    errorMessage = `Error ${response.status}: Halaman tidak diizinkan atau tidak ditemukan.`;
+                } else if (errData.details) {
                     errorMessage += ` Detail: ${typeof errData.details === 'object' ? JSON.stringify(errData.details) : errData.details}`;
                 }
                 throw new Error(errorMessage);
             }
 
-            const data = await response.json();
-            let botResponse = data.response || "Maaf, saya tidak mendapatkan respons yang valid saat ini.";
+            const data = JSON.parse(responseBodyText); // Coba parse jika response.ok
+            
+            // Sesuaikan dengan apa yang dikembalikan oleh proxy minimal Anda
+            // Jika proxy minimal mengembalikan { message: "...", receivedBody: ... }
+            let botResponse = data.message || (data.response || "Tidak ada pesan dari bot.");
+            if (data.receivedBody) {
+                console.log("Proxy menerima body:", data.receivedBody);
+            }
             addBotMessage(botResponse.trim());
 
         } catch (error) {
-            console.error("Error processing chat message:", error.message);
+            console.error("Error dalam handleUserMessage:", error.message);
             if (typingIndicatorElement && chatMessages.contains(typingIndicatorElement)) {
                 typingIndicatorElement.remove();
             }
-            let fallbackResponse = `Maaf, terjadi masalah: ${error.message}. Saya akan coba jawab dengan pengetahuan terbatas.`;
-            addBotMessage(fallbackResponse);
-            setTimeout(() => {
-                let localBotResponse = "Saya dapat menjawab pertanyaan dasar tentang Karmel. Kami akan meluncur pada " + (launchDateString ? launchDateString.substring(0, launchDateString.indexOf(',')) : 'tanggal yang ditentukan') + ". Silakan tanyakan apa saja!";
-                const lowerUserMessage = messageText.toLowerCase();
-                if (lowerUserMessage.includes('halo') || lowerUserMessage.includes('hai')) localBotResponse = "Halo! Ada yang bisa saya bantu tentang Karmel hari ini?";
-                else if (lowerUserMessage.includes('launch') || lowerUserMessage.includes('kapan') || lowerUserMessage.includes('tanggal')) localBotResponse = `Kami akan diluncurkan pada ${launchDateString ? launchDateString.substring(0, launchDateString.indexOf(',')) : 'tanggal yang ditentukan'}. Bersiaplah!`;
-                else if (lowerUserMessage.includes('apa itu karmel') || lowerUserMessage.includes('tentang karmel')) localBotResponse = "Karmel adalah sebuah proyek yang sangat menarik. Nantikan detail lebih lanjut pada hari peluncuran!";
-                else if (lowerUserMessage.includes('terima kasih')) localBotResponse = "Sama-sama! Beri tahu saya jika ada pertanyaan lain.";
-                else if (lowerUserMessage.includes('siapa kamu')) localBotResponse = "Saya adalah Karmel Bot, asisten virtual untuk website Karmel.";
-                addBotMessage(localBotResponse);
-            }, 1000);
+            addBotMessage(`Error: ${error.message}`);
         }
     }
 });
