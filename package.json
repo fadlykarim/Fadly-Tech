@@ -1,0 +1,10 @@
+{
+  "name": "karmel-coming-soon",
+  "version": "1.0.0",
+  "description": "Karmel Coming Soon Page with Chatbot",
+  "scripts": {
+    "start": "echo 'No start script defined for static site, use Netlify Dev'"
+  },
+  "author": "Nama Anda",
+  "license": "ISC"
+}
